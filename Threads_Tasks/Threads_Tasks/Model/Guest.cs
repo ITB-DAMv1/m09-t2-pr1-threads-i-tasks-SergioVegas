@@ -27,6 +27,28 @@ namespace Threads_Tasks.Model
             Left = left;
         }
 
+        public void Dinner( ref bool keepEating )
+        {
+
+            while (keepEating)
+            {
+                Meditate();
+                if (Hunger())
+                {
+                    lock (ConsoleLock)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
+                        Console.ResetColor();
+                    }
+                    keepEating = false; 
+                    return;
+                }
+                TakeChospticks();
+                Eat();
+                ReturnChopsticks();
+            }
+        }
         public void Meditate()
         {
             ShowState("Pensat...", ConsoleColor.Blue);
@@ -46,7 +68,7 @@ namespace Threads_Tasks.Model
         }
         public void Eat()
         {
-            ShowState("Menjant", ConsoleColor.Red);
+            ShowState("Menjant", ConsoleColor.Green);
             Thread.Sleep(new Random().Next(EatMinTime, EatMaxTime));
             CounterEat++;
             LastBite = DateTime.Now;
