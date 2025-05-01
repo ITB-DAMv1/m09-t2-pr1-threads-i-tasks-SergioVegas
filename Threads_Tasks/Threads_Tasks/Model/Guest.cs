@@ -20,7 +20,49 @@ namespace Threads_Tasks.Model
         public Chopstick Right { get; set; }
         public Chopstick Left { get; set; }
 
-        
+        public Guest(int id, Chopstick right, Chopstick left)
+        {
+            Id = id;
+            Right = right;
+            Left = left;
+        }
 
+        public void Meditate()
+        {
+            ShowState("Pensat...", ConsoleColor.Blue);
+            Thread.Sleep(new Random().Next(MedidateMinTime, MedidateMaxTime));
+        }
+        public void TakeChospticks()
+        {
+            lock (Right)
+            {
+                ShowState("Agafant el palet dret", ConsoleColor.Yellow);
+                lock (Left) { ShowState("Agafant el palet esquerre", ConsoleColor.Yellow); }
+            }
+        }
+        public void ReturnChopsticks()
+        {
+            ShowState("Deixant els palets a la taula", ConsoleColor.Magenta);
+        }
+        public void Eat()
+        {
+            ShowState("Menjant", ConsoleColor.Red);
+            Thread.Sleep(new Random().Next(EatMinTime, EatMaxTime));
+            CounterEat++;
+            LastBite = DateTime.Now;
+        }
+        private void ShowState(string estat, ConsoleColor color)
+        {
+            lock (ConsoleLock)
+            {
+                Console.ForegroundColor = color;
+                Console.WriteLine($"Comensal{Id}: {estat}");
+                Console.ResetColor();
+            }
+        }
+        public bool Hunger()
+        {
+            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;
+        }
     }
 }
