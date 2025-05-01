@@ -25,6 +25,7 @@ namespace Threads_Tasks.Model
             Id = id;
             Right = right;
             Left = left;
+            LastBite = DateTime.Now;
         }
 
         public void Dinner( ref bool keepEating )
@@ -64,7 +65,15 @@ namespace Threads_Tasks.Model
         }
         public void ReturnChopsticks()
         {
-            ShowState("Deixant els palets a la taula", ConsoleColor.Magenta);
+            lock (Right)
+            {
+                ShowState("Deixant el palet dret", ConsoleColor.Cyan);
+            }
+
+            lock (Left)
+            {
+                ShowState("Deixant el palet esquerre", ConsoleColor.Cyan);
+            }
         }
         public void Eat()
         {
@@ -77,8 +86,9 @@ namespace Threads_Tasks.Model
         {
             lock (ConsoleLock)
             {
-                Console.ForegroundColor = color;
-                Console.WriteLine($"Comensal{Id}: {estat}");
+                Console.BackgroundColor = color;
+                Console.ForegroundColor = (ConsoleColor)((Id % 15) + 1);
+                Console.WriteLine($"Comensal {Id}: {estat}");
                 Console.ResetColor();
             }
         }
