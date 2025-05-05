@@ -16,7 +16,8 @@ namespace Threads_Tasks.Model
         private static int MaxTimeWithOutEat = 15000;
         public int Id { get; set; } 
         public DateTime LastBite { get; set; }
-        public int  CounterEat {  get; set; } = 0; 
+        public int  CounterEat {  get; set; } = 0;
+        public double MaxTimeHungry { get; set; }
         public Chopstick Right { get; set; }
         public Chopstick Left { get; set; }
 
@@ -78,6 +79,8 @@ namespace Threads_Tasks.Model
         public void Eat()
         {
             ShowState("Menjant", ConsoleColor.Green);
+            double timeHungry = (DateTime.Now - LastBite).TotalSeconds;//Calcul de quant temps porta sense menjar
+            MaxTimeHungry = Math.Max(MaxTimeHungry, timeHungry); //Veiem si el nou temps registrat es més gran que l'ultim més gran.
             Thread.Sleep(new Random().Next(EatMinTime, EatMaxTime));
             CounterEat++;
             LastBite = DateTime.Now;
