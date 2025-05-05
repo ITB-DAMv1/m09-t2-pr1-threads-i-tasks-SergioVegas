@@ -1,4 +1,4 @@
-﻿
+﻿using Threads_Tasks.Tools;
 using Threads_Tasks.Model;
 
 namespace Threads_Tasks
@@ -26,6 +26,9 @@ namespace Threads_Tasks
                 fils.Add(fil);
             }
             fils.ForEach(fil => fil.Start());
+            fils.ForEach(fil => fil.Join());
+
+            Tools.SaveStats.SaveStatsToCsv(guests);
         }
     }
 }
