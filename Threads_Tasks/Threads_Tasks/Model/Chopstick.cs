@@ -9,6 +9,6 @@ namespace Threads_Tasks.Model
     public class Chopstick
     {
         public int Id { get; set; }
-        public bool IsUsed { get; set; } =  false;
+        
     }
 }
