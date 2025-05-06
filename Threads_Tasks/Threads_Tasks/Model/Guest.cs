@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,13 +30,16 @@ namespace Threads_Tasks.Model
             LastBite = DateTime.Now;
         }
 
-        public void Dinner( ref bool keepEating )
+        public void Dinner()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-            while (keepEating)
+            while (Program.keepEating)
             {
+
                 Meditate();
-                if (Hunger())
+                if (Hunger() || stopwatch.ElapsedMilliseconds >= 10000)
                 {
                     lock (ConsoleLock)
                     {
@@ -43,7 +47,7 @@ namespace Threads_Tasks.Model
                         Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
                         Console.ResetColor();
                     }
-                    keepEating = false; 
+                    Program.keepEating = false; 
                     return;
                 }
                 TakeChospticks();
@@ -97,7 +101,8 @@ namespace Threads_Tasks.Model
         }
         public bool Hunger()
         {
-            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;
+            // Console.WriteLine($"Comensal {Id} - {(DateTime.Now - LastBite).TotalMilliseconds}  Máximo permitido: {MaxTimeWithOutEat}s");
+            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;  
         }
     }
 }
