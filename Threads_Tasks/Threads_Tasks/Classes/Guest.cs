@@ -30,27 +30,32 @@ namespace Threads_Tasks.Model
             LastBite = DateTime.Now;
         }
 
-        public void Dinner()
+        public void Dinner(bool keepEating, int maxTimeProgram )
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            while (Program.keepEating)
+            while (keepEating)
             {
 
                 Meditate();
-                if (Hunger() || stopwatch.ElapsedMilliseconds >= 10000)
+                if (Hunger() || stopwatch.ElapsedMilliseconds >= maxTimeProgram)
                 {
                     lock (ConsoleLock)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
+                        ShowState($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.", ConsoleColor.Red);
                         Console.ResetColor();
                     }
-                    Program.keepEating = false; 
+                    keepEating = false;
                     return;
                 }
-                TakeChospticks();
+                while (!TryAcquireChopsticks())
+                {
+                    ShowState("Esperant per agafar els palets...", ConsoleColor.Magenta);
+                    Thread.Sleep(500); // Espera y torna a intentar-ho
+                }
+
                 Eat();
                 ReturnChopsticks();
             }
@@ -60,25 +65,20 @@ namespace Threads_Tasks.Model
             ShowState("Pensat...", ConsoleColor.Blue);
             Thread.Sleep(new Random().Next(MedidateMinTime, MedidateMaxTime));
         }
-        public void TakeChospticks()
+        public bool TryAcquireChopsticks()
         {
-            lock (Right)
+            if (Right.TryAcquire(1000, this) && Left.TryAcquire(1000, this))
             {
-                ShowState("Agafant el palet dret", ConsoleColor.Yellow);
-                lock (Left) { ShowState("Agafant el palet esquerre", ConsoleColor.Yellow); }
+                ShowState("Agafant els palets", ConsoleColor.Yellow);
+                return true;
             }
+            return false;
         }
         public void ReturnChopsticks()
         {
-            lock (Right)
-            {
-                ShowState("Deixant el palet dret", ConsoleColor.Cyan);
-            }
-
-            lock (Left)
-            {
-                ShowState("Deixant el palet esquerre", ConsoleColor.Cyan);
-            }
+            Right.Release();
+            Left.Release();
+            ShowState("Deixant els palets", ConsoleColor.Cyan);
         }
         public void Eat()
         {

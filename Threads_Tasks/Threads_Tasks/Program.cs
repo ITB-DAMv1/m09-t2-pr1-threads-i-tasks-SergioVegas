@@ -9,7 +9,9 @@ namespace Threads_Tasks
         public static void Main(string[] args)
         {
             const int numGuests = 5;
-           
+            const int maxTimeProgram = 30000;
+
+
             Chopstick[] chopsticksTable = new Chopstick[numGuests];
 
             for (int i = 0; i < numGuests; i++) { chopsticksTable[i] = new Chopstick(); }
@@ -23,7 +25,7 @@ namespace Threads_Tasks
             }
             foreach (var guest in guests)
             {
-                Thread fil = new Thread(() => guest.Dinner());
+                Thread fil = new Thread(() => guest.Dinner(keepEating, maxTimeProgram));
                 fils.Add(fil);
             }
             fils.ForEach(fil => fil.Start());
