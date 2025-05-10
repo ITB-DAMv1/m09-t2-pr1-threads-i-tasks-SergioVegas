@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,8 @@ namespace Threads_Tasks.Model
         private static int MaxTimeWithOutEat = 15000;
         public int Id { get; set; } 
         public DateTime LastBite { get; set; }
-        public int  CounterEat {  get; set; } = 0; 
+        public int  CounterEat {  get; set; } = 0;
+        public double MaxTimeHungry { get; set; }
         public Chopstick Right { get; set; }
         public Chopstick Left { get; set; }
 
@@ -28,13 +30,16 @@ namespace Threads_Tasks.Model
             LastBite = DateTime.Now;
         }
 
-        public void Dinner( ref bool keepEating )
+        public void Dinner()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-            while (keepEating)
+            while (Program.keepEating)
             {
+
                 Meditate();
-                if (Hunger())
+                if (Hunger() || stopwatch.ElapsedMilliseconds >= 10000)
                 {
                     lock (ConsoleLock)
                     {
@@ -42,7 +47,7 @@ namespace Threads_Tasks.Model
                         Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
                         Console.ResetColor();
                     }
-                    keepEating = false; 
+                    Program.keepEating = false; 
                     return;
                 }
                 TakeChospticks();
@@ -78,6 +83,8 @@ namespace Threads_Tasks.Model
         public void Eat()
         {
             ShowState("Menjant", ConsoleColor.Green);
+            double timeHungry = (DateTime.Now - LastBite).TotalSeconds;//Calcul de quant temps porta sense menjar
+            MaxTimeHungry = Math.Max(MaxTimeHungry, timeHungry); //Veiem si el nou temps registrat es més gran que l'ultim més gran.
             Thread.Sleep(new Random().Next(EatMinTime, EatMaxTime));
             CounterEat++;
             LastBite = DateTime.Now;
@@ -94,7 +101,8 @@ namespace Threads_Tasks.Model
         }
         public bool Hunger()
         {
-            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;
+            // Console.WriteLine($"Comensal {Id} - {(DateTime.Now - LastBite).TotalMilliseconds}  Máximo permitido: {MaxTimeWithOutEat}s");
+            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;  
         }
     }
 }
