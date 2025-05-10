@@ -30,12 +30,12 @@ namespace Threads_Tasks.Model
             LastBite = DateTime.Now;
         }
 
-        public void Dinner()
+        public void Dinner(bool keepEating )
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            while (Program.keepEating)
+            while (keepEating)
             {
 
                 Meditate();
@@ -47,7 +47,7 @@ namespace Threads_Tasks.Model
                         Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
                         Console.ResetColor();
                     }
-                    Program.keepEating = false; 
+                    keepEating = false; 
                     return;
                 }
                 TakeChospticks();

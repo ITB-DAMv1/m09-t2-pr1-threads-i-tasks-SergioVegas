@@ -23,7 +23,7 @@ namespace Threads_Tasks
             }
             foreach (var guest in guests)
             {
-                Thread fil = new Thread(() => guest.Dinner());
+                Thread fil = new Thread(() => guest.Dinner(keepEating));
                 fils.Add(fil);
             }
             fils.ForEach(fil => fil.Start());
