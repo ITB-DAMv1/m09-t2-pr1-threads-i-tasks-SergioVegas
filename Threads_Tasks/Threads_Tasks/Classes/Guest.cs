@@ -30,7 +30,7 @@ namespace Threads_Tasks.Model
             LastBite = DateTime.Now;
         }
 
-        public void Dinner(bool keepEating )
+        public void Dinner(bool keepEating, int maxTimeProgram )
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -39,12 +39,12 @@ namespace Threads_Tasks.Model
             {
 
                 Meditate();
-                if (Hunger() || stopwatch.ElapsedMilliseconds >= 30000)
+                if (Hunger() || stopwatch.ElapsedMilliseconds >= maxTimeProgram)
                 {
                     lock (ConsoleLock)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
+                        ShowState($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.", ConsoleColor.Red);
                         Console.ResetColor();
                     }
                     keepEating = false;
