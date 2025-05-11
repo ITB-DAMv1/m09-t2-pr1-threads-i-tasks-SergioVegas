@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Media;
+using System.Diagnostics;
+using NAudio.Wave;
+
 namespace Asteroide.Classes
 {
     class Game
@@ -100,6 +102,7 @@ namespace Asteroide.Classes
                 {
                     asteroids.Add(new Asteroid(rand.Next(2, width - 2), 0));
                 }
+                Console.Beep(1000, 100); //So per cada gota
                 Task.Delay(400).Wait();
             }
         }
@@ -144,14 +147,12 @@ namespace Asteroide.Classes
         }
         private void MakeNoise()
         {
-            try
+            using (var audioFile = new AudioFileReader("../../../Sounds/meow.mp3"))
+            using (var outputDevice = new WaveOutEvent())
             {
-                SoundPlayer player = new SoundPlayer("impact.wav");
-                player.Play(); // Reproduce el sonido
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al reproducir sonido: {ex.Message}");
+                outputDevice.Init(audioFile);
+                outputDevice.Play();
+                Thread.Sleep(1000);
             }
         }
 
