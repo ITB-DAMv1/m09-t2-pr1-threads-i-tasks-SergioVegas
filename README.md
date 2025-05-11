@@ -22,3 +22,10 @@ He dividit el programa en diferents tasks:
    
 El paral·lelisme el faig servir amb Task.Run() per a HandleInput i GenerateAsteroids. L'objectiu aquí era que aquestes tasques (una que bloqueja esperant l'usuari i l'altra que té les seves pròpies esperes internes) no interferissin amb el flux principal del joc. 
 L'asincronia la faig servir amb async/await dins del bucle principal del joc (Start). Aquí, l'objectiu principal és controlar el ritme del joc i evitar que el bucle principal es bloquegi mentre faig les pauses (Task.Delay). 
+
+# Bibliografia
+https://www.luisllamas.es/naudio/ [Cómo procesar ficheros de audio en .NET con NAudio, 11/05/2025] [Luis Llamas, Abril 2023]
+https://learn.microsoft.com/es-es/dotnet/api/system.console?view=net-8.0 [Console Clase, 10/05/2025] [Autor anònim]
+https://learn.microsoft.com/es-es/dotnet/api/system.consolekey?view=net-7.0 [ConsoleKey Enum, 10/05/2025] [Autor anònim]
+https://learn.microsoft.com/es-es/dotnet/api/system.diagnostics.stopwatch?view=net-8.0  [Stopwatch Clase, 06/05/2025] [Autor anònim]
+https://learn.microsoft.com/es-es/dotnet/api/system.random?view=net-8.0 [Random Clase, 06/05/2025] [Autor anònim]
