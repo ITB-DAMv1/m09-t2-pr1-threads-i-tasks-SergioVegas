@@ -11,3 +11,14 @@ I per últim he afegit una cua amb prioritats perquè els comensals que han sigu
 # Exercici 2
 
 ## Com has executat les tasques per tal pintar, calcular i escoltar el teclat al mateix temps? Has diferenciat entre programació paral·lela i asíncrona?
+
+He dividit el programa en diferents tasks:
+
+1. HandleInput() -> Una task només per veure els inputs dels teclat que en aquest cas era el moviment del gat i la lletra q per sortir.
+
+2. GenerateAsteroids() -> Generar els asteroides.
+
+3. Start() -> Esta tota la lògica del joc.
+   
+El paral·lelisme el faig servir amb Task.Run() per a HandleInput i GenerateAsteroids. L'objectiu aquí era que aquestes tasques (una que bloqueja esperant l'usuari i l'altra que té les seves pròpies esperes internes) no interferissin amb el flux principal del joc. 
+L'asincronia la faig servir amb async/await dins del bucle principal del joc (Start). Aquí, l'objectiu principal és controlar el ritme del joc i evitar que el bucle principal es bloquegi mentre faig les pauses (Task.Delay). 
