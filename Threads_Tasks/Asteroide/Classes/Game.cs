@@ -74,6 +74,7 @@ namespace Asteroide.Classes
                     if (key == ConsoleKey.Q)
                     {
                         gameOver = true;
+                        SaveGameData();
                         EndGame();
                     }
                 }
@@ -155,12 +156,29 @@ namespace Asteroide.Classes
                 Thread.Sleep(1000);
             }
         }
+        private void SaveGameData()
+        {
+            string filePath = @"..\..\..\game_data.csv";
+
+            bool fileExists = File.Exists(filePath);
+
+            using (var writer = new StreamWriter(filePath, true))
+            {
+                if (!fileExists)
+                {
+                    writer.WriteLine("Data, Puntuació, Estat");
+                }
+
+                writer.WriteLine($"{DateTime.Now}, {score}");
+            }
+        }
 
         private void ShowGameOverScreen()
         {
             Console.Clear();
             Console.WriteLine("El gat s'ha mullat :(\nSi vols intentar de nou ajudar al gat, clica qualsevol tecla!");
             Console.WriteLine($"Final Score: {score}");
+            SaveGameData();
             Console.ReadKey(true);
             ResetGame();
         }
