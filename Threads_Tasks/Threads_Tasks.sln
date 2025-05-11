@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Threads_Tasks", "Threads_Tasks\Threads_Tasks.csproj", "{1B604688-425F-4FCC-A674-B74D2C0B2147}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroide", "Asteroide\Asteroide.csproj", "{CCA396D7-C02C-4C05-9CE5-18342F481BFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1B604688-425F-4FCC-A674-B74D2C0B2147}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B604688-425F-4FCC-A674-B74D2C0B2147}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B604688-425F-4FCC-A674-B74D2C0B2147}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA396D7-C02C-4C05-9CE5-18342F481BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA396D7-C02C-4C05-9CE5-18342F481BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA396D7-C02C-4C05-9CE5-18342F481BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA396D7-C02C-4C05-9CE5-18342F481BFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

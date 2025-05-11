@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,8 @@ namespace Threads_Tasks.Model
         private static int MaxTimeWithOutEat = 15000;
         public int Id { get; set; } 
         public DateTime LastBite { get; set; }
-        public int  CounterEat {  get; set; } = 0; 
+        public int  CounterEat {  get; set; } = 0;
+        public double MaxTimeHungry { get; set; }
         public Chopstick Right { get; set; }
         public Chopstick Left { get; set; }
 
@@ -25,26 +27,35 @@ namespace Threads_Tasks.Model
             Id = id;
             Right = right;
             Left = left;
+            LastBite = DateTime.Now;
         }
 
-        public void Dinner( ref bool keepEating )
+        public void Dinner(bool keepEating, int maxTimeProgram )
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             while (keepEating)
             {
+
                 Meditate();
-                if (Hunger())
+                if (Hunger() || stopwatch.ElapsedMilliseconds >= maxTimeProgram)
                 {
                     lock (ConsoleLock)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.");
+                        ShowState($"Comensal {Id} ha estat massa temps sense menjar! Finalitzant la simulació.", ConsoleColor.Red);
                         Console.ResetColor();
                     }
-                    keepEating = false; 
+                    keepEating = false;
                     return;
                 }
-                TakeChospticks();
+                while (!TryAcquireChopsticks())
+                {
+                    ShowState("Esperant per agafar els palets...", ConsoleColor.Magenta);
+                    Thread.Sleep(500); // Espera y torna a intentar-ho
+                }
+
                 Eat();
                 ReturnChopsticks();
             }
@@ -54,21 +65,26 @@ namespace Threads_Tasks.Model
             ShowState("Pensat...", ConsoleColor.Blue);
             Thread.Sleep(new Random().Next(MedidateMinTime, MedidateMaxTime));
         }
-        public void TakeChospticks()
+        public bool TryAcquireChopsticks()
         {
-            lock (Right)
+            if (Right.TryAcquire(1000, this) && Left.TryAcquire(1000, this))
             {
-                ShowState("Agafant el palet dret", ConsoleColor.Yellow);
-                lock (Left) { ShowState("Agafant el palet esquerre", ConsoleColor.Yellow); }
+                ShowState("Agafant els palets", ConsoleColor.Yellow);
+                return true;
             }
+            return false;
         }
         public void ReturnChopsticks()
         {
-            ShowState("Deixant els palets a la taula", ConsoleColor.Magenta);
+            Right.Release();
+            Left.Release();
+            ShowState("Deixant els palets", ConsoleColor.Cyan);
         }
         public void Eat()
         {
             ShowState("Menjant", ConsoleColor.Green);
+            double timeHungry = (DateTime.Now - LastBite).TotalSeconds;//Calcul de quant temps porta sense menjar
+            MaxTimeHungry = Math.Max(MaxTimeHungry, timeHungry); //Veiem si el nou temps registrat es més gran que l'ultim més gran.
             Thread.Sleep(new Random().Next(EatMinTime, EatMaxTime));
             CounterEat++;
             LastBite = DateTime.Now;
@@ -77,14 +93,16 @@ namespace Threads_Tasks.Model
         {
             lock (ConsoleLock)
             {
-                Console.ForegroundColor = color;
-                Console.WriteLine($"Comensal{Id}: {estat}");
+                Console.BackgroundColor = color;
+                Console.ForegroundColor = (ConsoleColor)((Id % 15) + 1);
+                Console.WriteLine($"Comensal {Id}: {estat}");
                 Console.ResetColor();
             }
         }
         public bool Hunger()
         {
-            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;
+            // Console.WriteLine($"Comensal {Id} - {(DateTime.Now - LastBite).TotalMilliseconds}  Máximo permitido: {MaxTimeWithOutEat}s");
+            return (DateTime.Now - LastBite).TotalMilliseconds > MaxTimeWithOutEat;  
         }
     }
 }
