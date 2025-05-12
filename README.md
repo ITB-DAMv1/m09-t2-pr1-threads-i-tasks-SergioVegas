@@ -8,6 +8,14 @@ També he fet servir TryEnter perquè si no tenen dos palets a la vegada els dei
 
 I per últim he afegit una cua amb prioritats perquè els comensals que han sigut els primers a intentar menjar siguin els primers a menjar quan es pugi.
 
+## Dades d’anàlisi
+
+- Quants comensals ha passat fam? I quin temps de mitjana?
+  Cap comensal ha passat fam, el programa acaba per un timer que he posat jo. El temmps de mitjana es 2.85 segons.
+- Quantes vegades ha menjat cada comensal de mitjana? 12 vegades.
+- Record de vegades que ha menjat un mateix comensal: 14 vegades.
+- Record de menys vegades que ha menjat un comensal: 11 vegades.
+
 # Exercici 2
 
 ## Com has executat les tasques per tal pintar, calcular i escoltar el teclat al mateix temps? Has diferenciat entre programació paral·lela i asíncrona?
